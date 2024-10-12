@@ -13,9 +13,15 @@ lazym is an AI-powered tool that automatically generates meaningful commit messa
 
 ## Requirements
 
-- [Ollama](https://ollama.ai/) with Llama 3.1:8b model
+- [Ollama](https://ollama.ai/) with [Llama 3.1:8b](https://ollama.com/library/llama3.1:8b) model
 - Git (version 2.0 or higher)
 - Python 3.7 or above
+
+Command to pull Llama 3.1:8b model for Ollama:
+
+```
+$ ollama run llama3.1:8b
+```
 
 ## Installation
 
