@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+import sys
+from logging import Logger
+from pathlib import Path
+
+logger = Logger(__file__)
+
+try:
+    from lazym.chain import generate_commit_message
+    from lazym.git import get_diff, has_commit_history
+    from lazym.prompt import PROMPT
+except ImportError:
+    logger.warning('Unable to import lazym. Please ensure it is installed correctly.')
+    sys.exit(1)
+
+_REPO_ROOT = Path(__file__).parent.parent.parent
+
+def main(commit_msg_file, commit_source, sha1):
+    if not has_commit_history(_REPO_ROOT):
+        commit_message = "initial commit"
+    else:
+        diff = get_diff(_REPO_ROOT)
+        if not diff:
+            logger.info("No changes to commit.")
+            sys.exit(0)
+        
+        commit_message = generate_commit_message(PROMPT, diff)
+
+    with open(commit_msg_file, 'r') as f:
+        original_commit_message = f.read()
+
+    with open(commit_msg_file, 'w') as f:
+        f.write(f'{commit_message}\n{original_commit_message}')
+
+if __name__ == "__main__":
+    commit_msg_file = sys.argv[1] if len(sys.argv) > 1 else None
+    commit_source = sys.argv[2] if len(sys.argv) > 2 else None
+    sha1 = sys.argv[3] if len(sys.argv) > 3 else None
+
+    main(commit_msg_file, commit_source, sha1)

@@ -1,0 +1,4 @@
+include README.md
+include LICENSE
+include requirements.txt
+include src/lazym/prepare-commit-msg
