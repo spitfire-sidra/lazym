@@ -2,7 +2,7 @@
 
 lazym is an AI-powered tool that automatically generates meaningful commit messages for your Git repositories.
 
-*lazy is inspired by [jen-Ya/commitgpt](https://github.com/jen-Ya/commitgpt)*
+*lazym is inspired by [jen-Ya/commitgpt](https://github.com/jen-Ya/commitgpt)*
 
 ## Features
 
@@ -34,13 +34,13 @@ To install lazym, follow these steps:
    pip install lazym
    ```
 
-3. After installation, run the following command to set up the Git hook:
+3. After installation, navigate to any Git repository and run the following command to set up the Git hook:
 
    ```
    lazym install
    ```
 
-This will install the necessary Git hook to enable automatic commit message generation.
+   This will install the necessary Git hook to enable automatic commit message generation.
 
 ## Usage
 
