@@ -16,6 +16,10 @@ except ImportError:
 _REPO_ROOT = Path(__file__).parent.parent.parent
 
 def main(commit_msg_file, commit_source, sha1):
+    # generate commit message only if no commit source is provided
+    if commit_source:
+        return
+
     if not has_commit_history(_REPO_ROOT):
         commit_message = "initial commit"
     else:
