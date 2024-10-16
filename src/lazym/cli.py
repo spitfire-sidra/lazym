@@ -2,6 +2,10 @@ import os
 import shutil
 import sys
 
+from beaupy import confirm
+
+from lazym.git import commit
+
 
 def _get_repo_root():
     try:
@@ -59,8 +63,7 @@ def generate_commit_message(summary):
         sys.exit(0)
     
     prompt_with_summary = f"{PROMPT}\n\nAdditional context: {summary}"
-    commit_message = generate_commit_message(prompt_with_summary, diff)
-    print(f"Generated commit message:\n\n{commit_message}")
+    return generate_commit_message(prompt_with_summary, diff)
 
 
 def main():
@@ -78,7 +81,12 @@ def main():
     elif command == 'uninstall':
         uninstall_hook()
     elif command == 'ci':
-        generate_commit_message(sys.argv[2])
+        commit_message = generate_commit_message(sys.argv[2])
+        print(f"Generated commit message:\n{commit_message}")
+        if confirm("Is this commit message okay?"):
+            commit(commit_message)
+        else:
+            print("Commit aborted.")
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

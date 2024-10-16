@@ -33,3 +33,7 @@ def get_diff(repo_root):
 
 def has_commit_history(repo_root):
     return Path(f'{repo_root}/.git/logs/HEAD').exists()
+
+
+def commit(msg):
+    subprocess.run(["git", "commit", "-m", msg])
