@@ -2,7 +2,7 @@ import os
 import shutil
 import sys
 
-from beaupy import confirm
+from beaupy import confirm, prompt, select
 
 from lazym.git import commit
 
@@ -82,11 +82,24 @@ def main():
         uninstall_hook()
     elif command == 'ci':
         commit_message = generate_commit_message(sys.argv[2])
-        print(f"Generated commit message:\n{commit_message}")
-        if confirm("Is this commit message okay?"):
-            commit(commit_message)
-        else:
-            print("Commit aborted.")
+        print(f"Generated commit message:\n\n{commit_message}\n")
+        
+        options = ["Accept and commit", "Edit message", "Cancel commit"]
+        while True:
+            choice = select(options)
+            
+            if choice == "Accept and commit":
+                commit(commit_message)
+                break
+            elif choice == "Edit message":
+                edited_message = prompt("Edit the commit message:", initial_value=commit_message)
+                if confirm("Commit with this edited message?"):
+                    commit(edited_message)
+                    break
+                # If not confirmed, loop back to the choice
+            elif choice == "Cancel commit":
+                print("Commit aborted.")
+                break
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
