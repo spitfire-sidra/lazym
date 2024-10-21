@@ -8,7 +8,7 @@ def format_commit_message(message, fmt):
     if fmt == 'lowercase':
         return message[0].lower() + message[1:]
     elif fmt == 'sentence case':
-        return message.title()
+        return message.capitalize()
     return message  # Keep original format if not specified
 
 
