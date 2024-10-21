@@ -84,10 +84,14 @@ def main():
         commit_message = generate_commit_message(sys.argv[2])
         print(f"Generated commit message:\n\n{commit_message}\n")
         
-        options = ["Accept and commit", "Edit message", "Cancel commit"]
+        options = ["Accept and commit", "Edit message", "Use different hint", "Cancel commit"]
         while True:
             choice = select(options)
-            
+            if choice == "Use different hint":
+                new_hint = prompt("Enter a new hint:")
+                commit_message = generate_commit_message(new_hint)
+                print(f"Generated commit message:\n\n{commit_message}\n")
+                continue
             if choice == "Accept and commit":
                 commit(commit_message)
                 break
