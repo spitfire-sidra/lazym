@@ -66,6 +66,10 @@ def generate_commit_message(summary):
     return generate_commit_message(prompt_with_summary, diff)
 
 
+def highlight(s):
+    return f'\033[1;33m{s}\033[0m'
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: lazym <command> <args>")
@@ -81,27 +85,27 @@ def main():
     elif command == 'uninstall':
         uninstall_hook()
     elif command == 'ci':
-        commit_message = generate_commit_message(sys.argv[2])
-        print(f"Generated commit message:\n\n{commit_message}\n")
+        hint = sys.argv[2]
+        commit_message = generate_commit_message(hint)
+        print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
         
         options = ["Accept and commit", "Edit message", "Use different hint", "Cancel commit"]
         while True:
             choice = select(options)
             if choice == "Use different hint":
-                new_hint = prompt("Enter a new hint:")
-                commit_message = generate_commit_message(new_hint)
-                print(f"Generated commit message:\n\n{commit_message}\n")
+                hint = prompt("Enter a new hint:", initial_value=hint)
+                commit_message = generate_commit_message(hint)
+                print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
                 continue
             if choice == "Accept and commit":
                 commit(commit_message)
                 break
             elif choice == "Edit message":
-                edited_message = prompt("Edit the commit message:", initial_value=commit_message)
-                import os
+                commit_message = prompt("Edit the commit message:", initial_value=commit_message)
                 os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal
-                print(f"Edited commit message:\n\n{edited_message}\n")
+                print(f"Edited commit message:\n\n{highlight(commit_message)}\n")
                 if confirm("Commit with this edited message?"):
-                    commit(edited_message)
+                    commit(commit_message)
                     break
                 # If not confirmed, loop back to the choice
             elif choice == "Cancel commit":
