@@ -97,6 +97,9 @@ def main():
                 break
             elif choice == "Edit message":
                 edited_message = prompt("Edit the commit message:", initial_value=commit_message)
+                import os
+                os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal
+                print(f"Edited commit message:\n\n{edited_message}\n")
                 if confirm("Commit with this edited message?"):
                     commit(edited_message)
                     break
