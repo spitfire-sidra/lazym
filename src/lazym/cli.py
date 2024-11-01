@@ -62,7 +62,7 @@ def generate_commit_message(summary):
         print("No changes to commit.")
         sys.exit(0)
     
-    prompt_with_summary = f"{PROMPT}\n\nAdditional context: {summary}"
+    prompt_with_summary = f"{PROMPT}\n\nHere is a summary of the changes: {summary}"
     return generate_commit_message(prompt_with_summary, diff)
 
 

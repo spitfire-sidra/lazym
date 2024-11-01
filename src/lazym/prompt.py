@@ -16,6 +16,7 @@ Rules:
 - The commit message must not contain fake issue numbers.
 - The commit message must not contain statistics (e.g., lines added or deleted).
 - No explanation or additional text is allowed.
+- If a summary of the changes is provided, you can generate the commit message based on that summary.
 
 Give me a one-line commit message based on the following git diff (enclosed in triple backticks):
 ```
