@@ -11,7 +11,7 @@ try:
     from lazym.prompt import PROMPT
 except ImportError:
     logger.warning('Unable to import lazym. Please ensure it is installed correctly.')
-    sys.exit(1)
+    sys.exit(0)
 
 _REPO_ROOT = Path(__file__).parent.parent.parent
 
