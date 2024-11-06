@@ -30,7 +30,7 @@ COMMIT_MSG:
 
 
 def get_prompt():
-    if configurations['prompt']:
+    if configurations.get('prompt', ''):
         return configurations['prompt']
     return _PROMPT
 
