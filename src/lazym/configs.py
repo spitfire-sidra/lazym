@@ -10,6 +10,7 @@ def load_config():
         'DEFAULT': {
             'model': 'llama3.1:8b',
             'message_format': 'lowercase',  # lowercase, sentence case
+            'prompt': '',
         }
     }
     

@@ -1,8 +1,10 @@
-PROMPT = '''
+from lazym.configs import configurations
+
+_PROMPT = '''
 You are a git commit message generator.
 Your task is to help the user write a good commit message.
 Take the whole conversation in consideration and suggest a good commit message.
-Never say anything that is not your proposed commit message, never appologize.
+Never say anything that is not your proposed commit message, never apologize.
 
 Rules:
 - One line only.
@@ -16,7 +18,7 @@ Rules:
 - The commit message must not contain fake issue numbers.
 - The commit message must not contain statistics (e.g., lines added or deleted).
 - No explanation or additional text is allowed.
-- If a summary of the changes is provided, you can generate the commit message based on that summary.
+- If a summary of the changes is provided, you must generate the commit message based on that summary.
 
 Give me a one-line commit message based on the following git diff (enclosed in triple backticks):
 ```
@@ -25,3 +27,12 @@ Give me a one-line commit message based on the following git diff (enclosed in t
 
 COMMIT_MSG:
 '''
+
+
+def get_prompt():
+    if configurations['prompt']:
+        return configurations['prompt']
+    return _PROMPT
+
+
+PROMPT = get_prompt()
