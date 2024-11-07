@@ -86,26 +86,29 @@ lazym can be configured using a `config.ini` file located at `~/.config/lazym/co
   - Default: empty (uses built-in prompt)
   - You can customize this to match your team's commit message style
 
-Example `config.ini`:
-
-```ini
-[DEFAULT]
-model = llama3.1:8b
-message_format = lowercase
-prompt = 
-```
-
 ### Customizing Prompts
 
-You can customize how lazym generates commit messages by providing your own prompt template. The prompt should:
-- Include the `{diff}` placeholder where the code changes will be inserted
-- Clearly specify your desired commit message format
-- Include any specific conventions or rules you want the AI to follow
+You can customize how lazym generates commit messages by providing your own prompt template. There are two ways to do this:
 
-Example prompts:
+1. **Using `config.ini`:** Suitable for simple, one-line prompts. Specify the `prompt` option in your `config.ini` file. This method is ideal for straightforward prompts that don't require complex formatting or multiple lines.
 
-```ini
-prompt = "Generate a conventional commit message for these changes.\nFormat: <type>(<scope>): <description>\nTypes: feat, fix, docs, style, refactor, test, chore\nKeep the message under 72 chars.\nChanges:\n{diff}"
-```
+   Example:
+   ```ini
+   [DEFAULT]
+   prompt = "Generate a concise commit message for the following changes: {diff}"
+   ```
 
-If no prompt is specified in the config, lazym will use its built-in prompt template that follows general Git best practices.
+2. **Using `prompt.txt`:** Suitable for more complex, multi-line prompts. Create a `prompt.txt` file in the `~/.config/lazym/` directory. If this file exists, its contents will override the `prompt` setting in `config.ini`. This method is ideal for detailed prompts that require specific formatting or guidelines.
+
+   Example `prompt.txt`:
+   ```
+   Generate a conventional commit message for these changes.
+   Format: <type>(<scope>): <description>
+   Types: feat, fix, docs, style, refactor, test, chore
+   Keep the message under 72 chars.
+
+   Changes:
+   {diff}
+   ```
+
+If no prompt is specified in either `config.ini` or `prompt.txt`, lazym will use its built-in prompt template that follows general Git best practices.

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from lazym.configs import configurations
 
 _PROMPT = '''
@@ -30,6 +32,9 @@ COMMIT_MSG:
 
 
 def get_prompt():
+    prompt_path = Path.home() / '.config' / 'lazym' / 'prompt.txt'
+    if prompt_path.exists():
+        return prompt_path.read_text()
     if configurations.get('prompt', ''):
         return configurations['prompt']
     return _PROMPT
