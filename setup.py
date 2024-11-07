@@ -33,6 +33,7 @@ setup(
         "langchain-community==0.3.2",
         "langchain-core==0.3.10",
         "langchain-ollama==0.2.0",
+        "langchain-groq==0.2.0",
         "langchain-text-splitters==0.3.0",
     ],
     entry_points={

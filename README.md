@@ -73,6 +73,25 @@ lazym can be configured using a `config.ini` file located at `~/.config/lazym/co
 
 - `model`: The AI model to use for generating commit messages. 
   - Default: `"llama3.1:8b"`
+  - Options:
+    - Ollama models: Use the model name directly (e.g., `"llama3.1:8b"`, `"codellama:7b"`)
+    - Groq models: Prefix with `"groq:"` (e.g., `"groq:mixtral-8x7b-32768"`, `"groq:llama2-70b-4096"`)
+
+> [!NOTE]
+> To use Groq models, you need to:
+> 1. Sign up at [groq.com](https://groq.com) to get an API key
+> 2. Set the `GROQ_API_KEY` environment variable with your API key
+
+Example configurations:
+
+```ini
+[DEFAULT]
+# Using local Ollama model
+model = llama3.1:8b
+
+# Using Groq for faster generation
+model = groq:mixtral-8x7b-32768
+```
 
 - `message_format`: The format to apply to the generated commit message.
   - Default: `"lowercase"`
