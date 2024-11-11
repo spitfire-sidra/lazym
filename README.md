@@ -82,16 +82,11 @@ lazym can be configured using a `config.ini` file located at `~/.config/lazym/co
 > 1. Sign up at [groq.com](https://groq.com) to get an API key
 > 2. Set the `GROQ_API_KEY` environment variable with your API key
 
-Example configurations:
-
-```ini
-[DEFAULT]
-# Using local Ollama model
-model = llama3.1:8b
-
-# Using Groq for faster generation
-model = groq:mixtral-8x7b-32768
-```
+- `temperature`: Controls the randomness of the AI's responses.
+  - Default: `0.8`
+  - Range: `0.0` to `1.0`
+  - Lower values make responses more focused and deterministic
+  - Higher values make responses more creative and varied
 
 - `message_format`: The format to apply to the generated commit message.
   - Default: `"lowercase"`

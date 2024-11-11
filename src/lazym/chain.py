@@ -4,6 +4,7 @@ from langchain_ollama import OllamaLLM
 from langchain_openai import OpenAI
 
 from .configs import configurations
+from .constants import DEFAULT_TEMPERATURE
 
 
 def format_commit_message(message, fmt):
@@ -15,12 +16,14 @@ def format_commit_message(message, fmt):
 
 
 def get_llm():
+    temperature = float(configurations.get('temperature', DEFAULT_TEMPERATURE))
     if configurations['model'].startswith('groq:'):
         return ChatGroq(
             model=configurations['model'][5:],
             max_retries=2,
+            temperature=temperature,
         )
-    return OllamaLLM(model=configurations['model'])
+    return OllamaLLM(model=configurations['model'], temperature=temperature)
 
 
 def get_chain(prompt):

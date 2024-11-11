@@ -2,6 +2,8 @@
 import configparser
 from pathlib import Path
 
+from .constants import DEFAULT_TEMPERATURE
+
 
 def load_config():
     config = configparser.ConfigParser()
@@ -10,6 +12,7 @@ def load_config():
         'DEFAULT': {
             'model': 'llama3.1:8b',
             'message_format': 'lowercase',  # lowercase, sentence case
+            'temperature': DEFAULT_TEMPERATURE,
             'prompt': '',
         }
     }
