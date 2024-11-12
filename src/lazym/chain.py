@@ -1,7 +1,6 @@
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langchain_ollama import OllamaLLM
-from langchain_openai import OpenAI
 
 from .configs import configurations
 from .constants import DEFAULT_TEMPERATURE
