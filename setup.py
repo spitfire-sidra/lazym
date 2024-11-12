@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="lazym",
-    version="0.11.0",
+    version="0.11.1",
     author="Amo Chen",
     author_email="chimerhapsody@gmail.com",
     description="A tool to generate commit messages using AI",
@@ -35,6 +35,7 @@ setup(
         "langchain-ollama==0.2.0",
         "langchain-groq==0.2.0",
         "langchain-text-splitters==0.3.0",
+        "beaupy==3.9.2"
     ],
     entry_points={
         "console_scripts": [
