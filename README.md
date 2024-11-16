@@ -51,13 +51,14 @@ Once installed and set up, lazym works in two ways:
 2. Manually by running `lazym ci "<hints for LLM>"`:
    This command allows you to generate a commit message with additional context provided to the LLM.
 
-After generating the commit message, you'll be presented with three options:
+After generating the commit message, you'll be presented with four options:
 
 1. Accept and commit: Use the generated message as-is and commit.
 2. Edit message: Modify the generated message before committing.
-3. Cancel commit: Abort the commit process.
+3. Regenerate message: Generate a new message using the same diff.
+4. Cancel commit: Abort the commit process.
 
-This allows you to benefit from the AI-generated suggestions while maintaining full control over your commit messages. When editing, you can start with the AI-generated message and make any necessary adjustments.
+This allows you to benefit from the AI-generated suggestions while maintaining full control over your commit messages. If you're not satisfied with the generated message, you can either edit it or request a new one.
 
 ## Commands
 
