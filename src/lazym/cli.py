@@ -1,11 +1,35 @@
 import os
 import shutil
 import sys
+from typing import Optional
 
 from beaupy import confirm, prompt, select
+from prompt_toolkit import PromptSession
+from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.keys import Keys
 
 from lazym.git import commit
 
+
+def custom_prompt(message: str, initial_value: str = "") -> Optional[str]:
+    # Create key bindings
+    kb = KeyBindings()
+    
+    @kb.add('c-u')
+    def _(event):
+        # Clear the buffer
+        event.current_buffer.text = ""
+    
+    # Create a session with the key bindings
+    session = PromptSession(key_bindings=kb)
+    
+    # Show the prompt with initial value
+    result = session.prompt(
+        message + "\n(Ctrl+U to clear, Enter to submit)\n> ",
+        default=initial_value
+    )
+    
+    return result if result.strip() else None
 
 def _get_repo_root():
     try:
@@ -85,7 +109,7 @@ def main():
     elif command == 'uninstall':
         uninstall_hook()
     elif command == 'ci':
-        hint = sys.argv[2]
+        hint = sys.argv[2] if len(sys.argv) > 2 else ""
         commit_message = generate_commit_message(hint)
         print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
         
@@ -93,7 +117,7 @@ def main():
         while True:
             choice = select(options)
             if choice == "Use different hint":
-                hint = prompt("Enter a new hint:", initial_value=hint)
+                hint = custom_prompt("Enter a new hint:", initial_value=hint)
                 commit_message = generate_commit_message(hint)
                 print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
                 continue
@@ -105,13 +129,13 @@ def main():
                 commit(commit_message)
                 break
             elif choice == "Edit message":
-                commit_message = prompt("Edit the commit message:", initial_value=commit_message)
+                edited = custom_prompt("Edit the commit message:", initial_value=commit_message)
                 os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal
+                commit_message = commit_message if not edited else edited
                 print(f"Edited commit message:\n\n{highlight(commit_message)}\n")
                 if confirm("Commit with this edited message?"):
                     commit(commit_message)
                     break
-                # If not confirmed, loop back to the choice
             elif choice == "Cancel commit":
                 print("Commit aborted.")
                 break

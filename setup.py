@@ -35,7 +35,8 @@ setup(
         "langchain-ollama==0.2.0",
         "langchain-groq==0.2.0",
         "langchain-text-splitters==0.3.0",
-        "beaupy==3.9.2"
+        "beaupy==3.9.2",
+        "prompt_toolkit==3.0.48"
     ],
     entry_points={
         "console_scripts": [
