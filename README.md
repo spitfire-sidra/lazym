@@ -101,6 +101,12 @@ lazym can be configured using a `config.ini` file located at `~/.config/lazym/co
   - Default: empty (uses built-in prompt)
   - You can customize this to match your team's commit message style
 
+- `rstrip_period`: Controls whether to remove trailing periods from commit messages.
+  - Default: `"true"`
+  - Options:
+    - `"true"`: Remove trailing periods from commit messages
+    - `"false"`: Keep trailing periods if present in the generated message
+
 ### Customizing Prompts
 
 You can customize how lazym generates commit messages by providing your own prompt template. There are two ways to do this:

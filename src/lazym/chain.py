@@ -7,6 +7,11 @@ from .constants import DEFAULT_TEMPERATURE
 
 
 def format_commit_message(message, fmt):
+    # First handle the period stripping if enabled
+    if configurations.get('rstrip_period', 'true').lower() == 'true':
+        message = message.rstrip('.')
+    
+    # Then handle the message format
     if fmt == 'lowercase':
         return message[0].lower() + message[1:]
     elif fmt == 'sentence case':

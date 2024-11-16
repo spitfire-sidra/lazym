@@ -1,4 +1,3 @@
-
 import configparser
 from pathlib import Path
 
@@ -14,6 +13,7 @@ def load_config():
             'message_format': 'lowercase',  # lowercase, sentence case
             'temperature': DEFAULT_TEMPERATURE,
             'prompt': '',
+            'rstrip_period': 'true',
         }
     }
     
