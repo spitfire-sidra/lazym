@@ -89,11 +89,15 @@ def main():
         commit_message = generate_commit_message(hint)
         print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
         
-        options = ["Accept and commit", "Edit message", "Use different hint", "Cancel commit"]
+        options = ["Accept and commit", "Edit message", "Regenerate message", "Use different hint", "Cancel commit"]
         while True:
             choice = select(options)
             if choice == "Use different hint":
                 hint = prompt("Enter a new hint:", initial_value=hint)
+                commit_message = generate_commit_message(hint)
+                print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
+                continue
+            if choice == "Regenerate message":
                 commit_message = generate_commit_message(hint)
                 print(f"Generated commit message:\n\n{highlight(commit_message)}\n")
                 continue
