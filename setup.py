@@ -36,7 +36,8 @@ setup(
         "langchain-groq==0.2.0",
         "langchain-text-splitters==0.3.0",
         "beaupy==3.9.2",
-        "prompt_toolkit==3.0.48"
+        "prompt_toolkit==3.0.48",
+        "pyperclip==1.9.0"
     ],
     entry_points={
         "console_scripts": [
