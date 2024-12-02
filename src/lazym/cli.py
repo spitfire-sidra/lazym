@@ -3,7 +3,7 @@ import shutil
 import sys
 from typing import Optional
 
-from beaupy import confirm, prompt, select
+from beaupy import confirm, select
 from prompt_toolkit import PromptSession
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
