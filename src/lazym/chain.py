@@ -1,3 +1,4 @@
+from halo import Halo
 from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from langchain_ollama import OllamaLLM
@@ -37,7 +38,9 @@ def get_chain(prompt):
 
 
 def generate_commit_message(prompt, diff):
-    msg = get_chain(prompt).invoke({'diff': diff})
+    with Halo(text='Generating commit message', spinner='spinner') as spinner:
+        msg = get_chain(prompt).invoke({'diff': diff})
+        spinner.succeed('Generated commit message')
     if hasattr(msg, 'content'):
         msg = msg.content
     return format_commit_message(msg, configurations['message_format'])

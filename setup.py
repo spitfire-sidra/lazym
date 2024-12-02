@@ -37,7 +37,8 @@ setup(
         "langchain-text-splitters==0.3.0",
         "beaupy==3.9.2",
         "prompt_toolkit==3.0.48",
-        "pyperclip==1.9.0"
+        "pyperclip==1.9.0",
+        "halo==0.0.31"
     ],
     entry_points={
         "console_scripts": [
