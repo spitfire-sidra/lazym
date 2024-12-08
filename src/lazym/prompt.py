@@ -13,16 +13,19 @@ Rules:
 - Prioritize importance: Start with the most critical change if there are multiple updates.
 - Contextual relevance: Take the full conversation into account when crafting the message, if provided.
 - Diff structure: Use the GNU unified diff format details provided to interpret changes accurately.
+    - (-) lines: Removed from original.
+    - (+) lines: Added in modified version.
+    - Unmarked lines: Unchanged context.
+    - Focus only on the changes specified.
 
 Diff Details:
-The git diff will be enclosed in triple backticks (```) below. The header and file names are omitted; focus only on the changes specified.
+The git diff will be enclosed in <diff> and </diff> below. 
 
 Provide the commit message directly with no additional text, quotes, or explanation.
 
-Git Diff:
-```
+<diff>
 {diff}
-```
+</diff>
 
 COMMIT_MSG:
 '''
