@@ -7,11 +7,11 @@ from beaupy import confirm, select
 from prompt_toolkit import PromptSession
 from prompt_toolkit.key_binding import KeyBindings
 
-from lazym import bump_version
 from lazym.configs import configurations
 from lazym.constants import DEFAULT_VERSION
 from lazym.git import commit
 from lazym.github import create_github_release, get_latest_release
+from lazym.version import bump_version
 
 
 def custom_prompt(message: str, initial_value: str = "") -> Optional[str]:
