@@ -1,7 +1,7 @@
 import configparser
 from pathlib import Path
 
-from .constants import DEFAULT_TEMPERATURE
+from .constants import DEFAULT_SERVICE, DEFAULT_TEMPERATURE
 
 
 def load_config():
@@ -14,6 +14,9 @@ def load_config():
             'temperature': DEFAULT_TEMPERATURE,
             'prompt': '',
             'rstrip_period': 'true',
+            'service': DEFAULT_SERVICE,
+            'token': '',
+            'prefix_v_for_tag_name': 'true',
         }
     }
     
@@ -21,6 +24,7 @@ def load_config():
         config.read(config_path)
     else:
         config.read_dict(default_config)
+
     return config['DEFAULT']
 
 

@@ -65,6 +65,10 @@ This allows you to benefit from the AI-generated suggestions while maintaining f
 - `lazym install`: Install the prepare-commit-msg hook in the current Git repository.
 - `lazym uninstall`: Uninstall the prepare-commit-msg hook from the current Git repository.
 - `lazym ci "<optional hints>"`: Generate a commit message with optional additional context.
+- `lazym release <type>`: Bump the version number.
+  - `main`: Increases the major version (e.g., 1.2.3 -> 2.0.0)
+  - `minor`: Increases the minor version (e.g., 1.2.3 -> 1.3.0)
+  - `patch`: Increases the patch version (e.g., 1.2.3 -> 1.2.4)
 
 ## Configuration
 

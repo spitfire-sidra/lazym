@@ -6,9 +6,11 @@ from typing import Optional
 from beaupy import confirm, select
 from prompt_toolkit import PromptSession
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.keys import Keys
 
+from lazym.configs import configurations
 from lazym.git import commit
+from lazym.github import create_github_release, get_latest_release
+from lazym.version import DEFAULT_VERSION, bump_version
 
 
 def custom_prompt(message: str, initial_value: str = "") -> Optional[str]:
@@ -101,10 +103,64 @@ def main():
         print("\tinstall - Install the prepare-commit-msg hook")
         print("\tuninstall - Uninstall the prepare-commit-msg hook")
         print("\tci - Generate commit message with additional context")
+        print("\trelease <type> - Bump version (type: main, minor, patch)")
         sys.exit(0)
 
     command = sys.argv[1]
-    if command == 'install':
+    if command == 'release':
+        if len(sys.argv) < 3:
+            print("Error: Bump type required (main, minor, or patch)")
+            sys.exit(1)
+        
+        bump_type = sys.argv[2]
+        if bump_type not in ['main', 'minor', 'patch']:
+            print("Error: Invalid bump type. Use 'main', 'minor', or 'patch'")
+            sys.exit(1)
+
+        if configurations.get('service', '').lower() == 'github':
+            try:
+                if len(sys.argv) > 3:
+                    current_version = sys.argv[3]
+                else:
+                    latest_release = get_latest_release(
+                        os.getenv('REPO_OWNER', ''),
+                        os.getenv('REPO', ''),
+                        configurations.get('token', ''),
+                    )
+                    if latest_release:
+                        current_version = latest_release['tag_name']
+                    else:
+                        current_version = DEFAULT_VERSION
+
+                new_version = bump_version(current_version, bump_type)            
+                # Show version change and ask for confirmation
+                print(f"\nCurrent version: {current_version}")
+                print(f"New version: {new_version}\n")                
+                if confirm("\nDo you want to create a GitHub release with this version?"):
+                    release_name = new_version
+                    if configurations.get('prefix_v_for_tag_name'):
+                        release_name = f'v{release_name}'
+                    resp = create_github_release(
+                        os.getenv('REPO_OWNER', ''),
+                        os.getenv('REPO', ''),
+                        release_name,
+                        release_name,
+                        token=configurations.get('token', ''),
+                    )
+                    if resp:
+                        print(f"\n✨ Successfully created GitHub release {new_version}")
+                    else:
+                        print(f'release failed.')
+                else:
+                    print("\nRelease cancelled")
+                    sys.exit(0)
+                
+            except Exception as e:
+                print(f"Error creating release: {str(e)}")
+                sys.exit(1)
+        else:
+            raise NotImplemented
+    elif command == 'install':
         install_hook()
     elif command == 'uninstall':
         uninstall_hook()
