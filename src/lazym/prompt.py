@@ -22,7 +22,41 @@ Rules:
 - No explanation or additional text is allowed.
 - If a summary of the changes is provided, you must generate the commit message based on that summary.
 
+Here provides you the <diff_spec> to understand the diff.
+
+<diff_spec>
+  GNU unified diff format structure:
+
+    - For diffs the header with original and modified file names is omitted!
+    - Changed sections start with @@ -X,Y +A,B @@ where:
+      - X: Original file starting line
+      - Y: Original file line count
+      - A: Modified file starting line
+      - B: Modified file line count
+    - (-) lines: Removed from original
+    - (+) lines: Added in modified version
+    - Unmarked lines: Unchanged context
+
+    Example:
+
+    <code>
+      @@ -2,7 +2,10 @@
+          return a + b
+      
+
+      -print('Hello, World!');
+      +print('Hello, Lazym!');
+      +
+      def greet():
+      -    return 'Greetings!'
+      +    return 'Greetings!!'
+      +
+      +print('The End');
+    </code>
+</diff_spec>
+
 Give me a one-line commit message based on the following git diff (enclosed in triple backticks):
+
 ```
 {diff}
 ```
