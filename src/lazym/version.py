@@ -32,4 +32,4 @@ def bump_version(current_version: str, incr: str) -> str:
         return f'{major}.{minor + 1}.0'
     elif incr == 'patch':
         return f'{major}.{minor}.{patch + 1}'
-    raise ValueError()
+    raise ValueError
