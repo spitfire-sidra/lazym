@@ -18,9 +18,6 @@ def _version_str_to_int(s):
     return int(s.lstrip('0')) if s != '0' else 0
 
 
-DEFAULT_VERSION: str = '0.0.0'
-
-
 def bump_version(current_version: str, incr: str) -> str:
     if not _SEM_VER_RE.match(current_version):
         raise ValueError
