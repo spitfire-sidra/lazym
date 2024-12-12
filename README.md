@@ -111,6 +111,39 @@ lazym can be configured using a `config.ini` file located at `~/.config/lazym/co
     - `"true"`: Remove trailing periods from commit messages
     - `"false"`: Keep trailing periods if present in the generated message
 
+### GitHub Release Configuration
+
+- `service`: The service to use for releases.
+  - Default: `github`
+  - Set to `"github"` to enable GitHub releases
+
+- `token`: GitHub personal access token for creating releases.
+  - Default: empty
+  - Required when `service` is set to `"github"`
+  - Token must have `repo` scope permissions
+
+- `prefix_v_for_tag_name`: Whether to prefix version numbers with 'v' in release tags.
+  - Default: `true`
+  - Options:
+    - `true`: Tags will be like `v1.2.3`
+    - `false`: Tags will be like `1.2.3`
+
+Example configuration for GitHub releases:
+```ini
+[DEFAULT]
+service = github
+token = ghp_your_personal_access_token
+prefix_v_for_tag_name = true
+```
+
+> [!NOTE]
+> To use GitHub releases, you need to:
+> 1. Create a personal access token with `repo` scope at [GitHub Settings](https://github.com/settings/tokens)
+> 2. Set the following environment variables:
+>    - `REPO_OWNER`: Your GitHub username or organization name
+>    - `REPO`: The repository name
+> 3. Configure the service and token in your `config.ini`
+
 ### Customizing Prompts
 
 You can customize how lazym generates commit messages by providing your own prompt template. There are two ways to do this:
