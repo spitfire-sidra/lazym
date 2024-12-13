@@ -129,6 +129,7 @@ lazym can be configured using a `config.ini` file located at `~/.config/lazym/co
     - `false`: Tags will be like `1.2.3`
 
 Example configuration for GitHub releases:
+
 ```ini
 [DEFAULT]
 service = github
@@ -139,10 +140,7 @@ prefix_v_for_tag_name = true
 > [!NOTE]
 > To use GitHub releases, you need to:
 > 1. Create a personal access token with `repo` scope at [GitHub Settings](https://github.com/settings/tokens)
-> 2. Set the following environment variables:
->    - `REPO_OWNER`: Your GitHub username or organization name
->    - `REPO`: The repository name
-> 3. Configure the service and token in your `config.ini`
+> 2. Configure the service and token in your `config.ini`
 
 ### Customizing Prompts
 

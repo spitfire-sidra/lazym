@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -46,3 +47,24 @@ def commit(msg):
     else:
         logger.info('Commit successful')
     return result.returncode == 0
+
+
+def get_repo_info():
+    """Get repository owner and name from git remote URL."""
+    try:
+        # Get the remote URL
+        remote_url = os.popen('git config --get remote.origin.url').read().strip()
+        
+        # Handle SSH URL format: git@github.com:owner/repo.git
+        ssh_pattern = r'git@github\.com:([^/]+)/([^.]+)\.git'
+        # Handle HTTPS URL format: https://github.com/owner/repo.git
+        https_pattern = r'https://github\.com/([^/]+)/([^.]+)\.git'
+        
+        for pattern in [ssh_pattern, https_pattern]:
+            match = re.match(pattern, remote_url)
+            if match:
+                return match.group(1), match.group(2)
+        logger.error(f'Could not parse repository info from remote URL: {remote_url}')
+    except Exception as e:
+        logger.error(f'Error getting repository info: {str(e)}')
+    return None, None

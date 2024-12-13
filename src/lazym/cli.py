@@ -9,7 +9,7 @@ from prompt_toolkit.key_binding import KeyBindings
 
 from lazym.configs import configurations
 from lazym.constants import DEFAULT_VERSION
-from lazym.git import commit
+from lazym.git import commit, get_repo_info
 from lazym.github import create_github_release, get_latest_release
 from lazym.version import bump_version
 
@@ -119,13 +119,18 @@ def main():
             sys.exit(1)
 
         if configurations.get('service', '').lower() == 'github':
+            repo_owner, repo_name = get_repo_info()
+            if not (repo_owner and repo_name):
+                print("Error: Could not determine repository information.")
+                sys.exit(1)
+
             try:
                 if len(sys.argv) > 3:
                     current_version = sys.argv[3]
                 else:
                     latest_release = get_latest_release(
-                        os.getenv('REPO_OWNER', ''),
-                        os.getenv('REPO', ''),
+                        repo_owner,
+                        repo_name,
                         configurations.get('token', ''),
                     )
                     if latest_release:
@@ -142,8 +147,8 @@ def main():
                     if configurations.get('prefix_v_for_tag_name'):
                         release_name = f'v{release_name}'
                     resp = create_github_release(
-                        os.getenv('REPO_OWNER', ''),
-                        os.getenv('REPO', ''),
+                        repo_owner,
+                        repo_name,
                         release_name,
                         release_name,
                         token=configurations.get('token', ''),
