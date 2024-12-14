@@ -1,9 +1,11 @@
 name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
 
 on:
-  release:
-    types:
-      - published
+  push:
+    tags:
+      - '*'  # Trigger on any tag
+    branches:
+      - main  # Ensure it's on the main branch
 
 jobs:
   build:
