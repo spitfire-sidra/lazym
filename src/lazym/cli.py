@@ -183,8 +183,7 @@ def main():
                 sys.exit(1)
         else:
             print("Tag not pushed to remote.")
-
-    if command == 'release':
+    elif command == 'release':
         if configurations.get('service', '').lower() == 'github':
             repo_owner, repo_name = get_repo_info()
             if not (repo_owner and repo_name):
