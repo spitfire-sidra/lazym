@@ -68,3 +68,7 @@ def get_repo_info():
     except Exception as e:
         logger.error(f'Error getting repository info: {str(e)}')
     return None, None
+
+
+def get_local_latest_tags(limit=5):
+    return os.popen('git tag --sort=-creatordate').read().strip().split('\n')[:limit]

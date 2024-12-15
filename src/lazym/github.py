@@ -59,3 +59,21 @@ def get_latest_release(owner, repo, token=None):
     logging.error(f'Failed to fetch latest release: {response.status_code}')
     logging.error(response.json())
     return None
+
+
+def get_latest_tags(owner, repo, token=None, limit=1):
+    url = f'https://api.github.com/repos/{owner}/{repo}/tags'
+    headers = {
+        'Authorization': f'Bear {token}',
+        'Accept': 'application/vnd.github.v3+json',
+    }
+
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        tags = response.json()
+        if tags:
+            return [x['name'] for x in tags[:limit]]
+        
+    logging.error(f'Failed to fetch tags: {response.status_code}')
+    logging.error(response.json())
+    return None

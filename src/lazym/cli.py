@@ -9,8 +9,8 @@ from prompt_toolkit.key_binding import KeyBindings
 
 from lazym.configs import configurations
 from lazym.constants import DEFAULT_VERSION
-from lazym.git import commit, get_repo_info
-from lazym.github import create_github_release, get_latest_release
+from lazym.git import commit, get_local_latest_tags, get_repo_info
+from lazym.github import create_github_release, get_latest_release, get_latest_tags
 from lazym.version import bump_version
 
 
@@ -108,62 +108,102 @@ def main():
         sys.exit(0)
 
     command = sys.argv[1]
-    if command == 'release':
-        if len(sys.argv) < 3:
-            print("Error: Bump type required (main, minor, or patch)")
+    if command == 'tag':
+        # Get the latest local tag
+        local_tags = get_local_latest_tags()
+        latest_local_tag = local_tags[0] if local_tags else None
+        
+        # Get the latest remote tag
+        repo_owner, repo_name = get_repo_info()
+        latest_remote_tags = get_latest_tags(repo_owner, repo_name, configurations.get('token', ''))
+        latest_remote_tag_name = latest_remote_tags[0] if latest_remote_tags else None
+
+        print("Latest local tag:", latest_local_tag if latest_local_tag else "No local tags found.")
+        print("Latest remote tag:", latest_remote_tag_name if latest_remote_tag_name else "No remote tags found.")
+
+        # Prepare options for selection
+        options = []
+        if latest_local_tag:
+            options.append(latest_local_tag)
+        if latest_remote_tag_name:
+            options.append(latest_remote_tag_name)
+        options.append("Specify a new tag")
+        options.append('Abort')
+        # Ask user to select a tag
+        print('Please choose a tag to bump.')
+        selected_tag = select(options)
+        final_tag =  None
+        if selected_tag == "Specify a new tag":
+            if not (repo_owner and repo_name):
+                print("Error: Could not determine repository information.")
+                sys.exit(1)
+
+            new_tag = custom_prompt("Enter the new tag name:", initial_value="")
+            if new_tag:
+                print(f"New tag specified: {new_tag}")
+                final_tag = new_tag
+            else:
+                print("No new tag specified. Aborting.")
+                sys.exit(1)
+        elif selected_tag == 'Abort' or not selected_tag:
+            sys.exit(0)
+        else:
+            print(f"Selected a tag to bump: {selected_tag}")
+            options = []
+            for bump_type in ['main', 'minor', 'patch']:
+                new_version = bump_version(selected_tag, bump_type)
+                options.append(new_version)
+            options.append('abort')
+            print("Choose a new version to bump to:")
+            selected_tag = select(options)
+            if selected_tag == 'abort':
+                sys.exit(0)
+            print(f"Selected tag: {selected_tag}")
+            final_tag = selected_tag
+
+        if not final_tag:
+            print("No tag selected or specified. Aborting.")
             sys.exit(1)
         
-        bump_type = sys.argv[2]
-        if bump_type not in ['main', 'minor', 'patch']:
-            print("Error: Invalid bump type. Use 'main', 'minor', or 'patch'")
+        # Create a local tag
+        try:
+            os.system(f'git tag -a {final_tag} -m "{final_tag}"')
+            print(f"Tag {final_tag} created successfully.")
+        except Exception as e:
+            print(f"Failed to create tag {final_tag}: {e}")
             sys.exit(1)
 
+        push_tag = confirm("Do you want to push the tag to the remote repository?")
+        if push_tag:
+            try:
+                os.system(f'git push origin {final_tag}')
+                print(f"Tag {final_tag} pushed to remote successfully.")
+            except Exception as e:
+                print(f"Failed to push tag {final_tag} to remote: {e}")
+                sys.exit(1)
+        else:
+            print("Tag not pushed to remote.")
+
+    if command == 'release':
         if configurations.get('service', '').lower() == 'github':
             repo_owner, repo_name = get_repo_info()
             if not (repo_owner and repo_name):
                 print("Error: Could not determine repository information.")
                 sys.exit(1)
-
-            try:
-                if len(sys.argv) > 3:
-                    current_version = sys.argv[3]
-                else:
-                    latest_release = get_latest_release(
-                        repo_owner,
-                        repo_name,
-                        configurations.get('token', ''),
-                    )
-                    if latest_release:
-                        current_version = latest_release['tag_name']
-                    else:
-                        current_version = DEFAULT_VERSION
-
-                new_version = bump_version(current_version, bump_type)            
-                # Show version change and ask for confirmation
-                print(f"\nCurrent version: {current_version}")
-                print(f"New version: {new_version}\n")                
-                if confirm("\nDo you want to create a GitHub release with this version?"):
-                    release_name = new_version
-                    if configurations.get('prefix_v_for_tag_name'):
-                        release_name = f'v{release_name}'
-                    resp = create_github_release(
-                        repo_owner,
-                        repo_name,
-                        release_name,
-                        release_name,
-                        token=configurations.get('token', ''),
-                    )
-                    if resp:
-                        print(f"\n✨ Successfully created GitHub release {new_version}")
-                    else:
-                        print(f'release failed.')
-                else:
-                    print("\nRelease cancelled")
-                    sys.exit(0)
-                
-            except Exception as e:
-                print(f"Error creating release: {str(e)}")
+            latest_tags = get_latest_tags(repo_owner, repo_name, limit=5)
+            if not latest_tags:
+                print("Failed to fetch latest tags.")
                 sys.exit(1)
+            print("Select a tag to release on GitHub:")
+            selected_tag = select(latest_tags)
+            print(f"Selected tag for release: {selected_tag}")
+            create_github_release(
+                repo_owner,
+                repo_name,
+                selected_tag,
+                selected_tag,
+                token=configurations.get('token', ''),
+            )
         else:
             raise NotImplemented
     elif command == 'install':
