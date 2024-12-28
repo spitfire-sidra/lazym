@@ -38,7 +38,8 @@ setup(
         "beaupy==3.9.2",
         "prompt_toolkit==3.0.48",
         "pyperclip==1.9.0",
-        "halo==0.0.31"
+        "halo==0.0.31",
+        "typer==0.12.5",
     ],
     entry_points={
         "console_scripts": [
