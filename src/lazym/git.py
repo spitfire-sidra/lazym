@@ -72,3 +72,12 @@ def get_repo_info():
 
 def get_local_latest_tags(limit=5):
     return os.popen('git tag --sort=-creatordate').read().strip().split('\n')[:limit]
+
+
+def get_repo_root():
+    try:
+        repo_root = os.popen('git rev-parse --show-toplevel').read().strip()
+    except Exception:
+        print("Error: Not a git repository or git is not installed.")
+        sys.exit(1)
+    return repo_root

@@ -43,7 +43,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "lazym=lazym.cli:main",
+            "lazym=lazym.cli:app",
         ],
     },
     package_data={
