@@ -183,7 +183,7 @@ def tag():
     else:
         print("Tag not pushed to remote.")
 
-@app.command
+@app.command()
 def release():
     '''
     Create a new release on GitHub based on the selected tag.
@@ -212,7 +212,7 @@ def release():
     raise NotImplemented
 
 
-@app.command
+@app.command()
 def ci(hint: str):
     '''
     Generate a commit message with additional context or hints.
