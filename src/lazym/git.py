@@ -95,3 +95,11 @@ def create_tag(tag):
         print(f"Failed to create tag {tag}: {e}")
         sys.exit(1)
 
+
+def push_tag_to_origin(tag):
+    try:
+        subprocess.run(['git', 'push', 'origin', tag], check=True)
+        print(f"Tag {tag} pushed to remote successfully.")
+    except Exception as e:
+        print(f"Failed to push tag {tag} to remote: {e}")
+        sys.exit(1)

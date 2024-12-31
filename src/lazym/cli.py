@@ -15,6 +15,7 @@ from lazym.git import (
     get_local_latest_tags,
     get_repo_info,
     get_repo_root,
+    push_tag_to_origin,
 )
 from lazym.github import create_github_release, get_latest_tags
 from lazym.version import bump_version
@@ -159,14 +160,8 @@ def tag():
     # Create a local tag
     create_tag(final_tag)
 
-    push_tag = confirm("Do you want to push the tag to the remote repository?")
-    if push_tag:
-        try:
-            os.system(f'git push origin {final_tag}')
-            print(f"Tag {final_tag} pushed to remote successfully.")
-        except Exception as e:
-            print(f"Failed to push tag {final_tag} to remote: {e}")
-            sys.exit(1)
+    if push_tag := confirm("Do you want to push the tag to the remote repository?"):
+        push_tag_to_origin(push_tag)
     else:
         print("Tag not pushed to remote.")
 
