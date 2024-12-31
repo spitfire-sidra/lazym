@@ -81,3 +81,17 @@ def get_repo_root():
         print("Error: Not a git repository or git is not installed.")
         sys.exit(1)
     return repo_root
+
+
+def create_tag(tag):
+    try:
+        subprocess.run(
+            ['git', 'tag', '-a', tag, '-m', tag], 
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to create tag {tag}: {e}")
+        sys.exit(1)
+

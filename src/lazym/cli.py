@@ -9,7 +9,13 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.key_binding import KeyBindings
 
 from lazym.configs import configurations
-from lazym.git import commit, get_local_latest_tags, get_repo_info, get_repo_root
+from lazym.git import (
+    commit,
+    create_tag,
+    get_local_latest_tags,
+    get_repo_info,
+    get_repo_root,
+)
 from lazym.github import create_github_release, get_latest_tags
 from lazym.version import bump_version
 
@@ -103,74 +109,55 @@ def uninstall():
         sys.exit(1)
 
 
+def select_base_tag(local_tag, remote_tag):
+    tags = (local_tag, remote_tag, )
+    if local_tag == remote_tag:
+        tags = (local_tag, )
+    options = [t for t in tags if t]
+    options.extend(["Specify a new tag", "Abort"])
+    return select(options)
+
+
+def get_new_tag_version(base_tag):
+    options = [bump_version(base_tag, btype) for btype in ['main', 'minor', 'patch']]
+    options.append('abort')
+    return select(options)
+
+
 @app.command()
 def tag():
     '''
     Automatically generate a new git tag.
     '''
     # Get the latest local tag
-    local_tags = get_local_latest_tags()
-    latest_local_tag = local_tags[0] if local_tags else None
+    latest_local_tag = get_local_latest_tags()[0] if get_local_latest_tags() else None
     
     # Get the latest remote tag
     repo_owner, repo_name = get_repo_info()
     latest_remote_tags = get_latest_tags(repo_owner, repo_name, configurations.get('token', ''))
-    latest_remote_tag_name = latest_remote_tags[0] if latest_remote_tags else None
+    latest_remote_tag = latest_remote_tags[0] if latest_remote_tags else None
 
     print("Latest local tag:", latest_local_tag if latest_local_tag else "No local tags found.")
-    print("Latest remote tag:", latest_remote_tag_name if latest_remote_tag_name else "No remote tags found.")
+    print("Latest remote tag:", latest_remote_tag if latest_remote_tag else "No remote tags found.")
 
     # Prepare options for selection
-    options = []
-    if latest_local_tag:
-        options.append(latest_local_tag)
-    if latest_remote_tag_name:
-        options.append(latest_remote_tag_name)
-    options.append("Specify a new tag")
-    options.append('Abort')
-    # Ask user to select a tag
-    print('Please choose a tag to bump.')
-    selected_tag = select(options)
-    final_tag =  None
-    if selected_tag == "Specify a new tag":
-        if not (repo_owner and repo_name):
-            print("Error: Could not determine repository information.")
-            sys.exit(1)
-
-        new_tag = custom_prompt("Enter the new tag name:", initial_value="")
-        if new_tag:
-            print(f"New tag specified: {new_tag}")
-            final_tag = new_tag
-        else:
-            print("No new tag specified. Aborting.")
-            sys.exit(1)
-    elif selected_tag == 'Abort' or not selected_tag:
+    selected = select_base_tag(latest_local_tag, latest_remote_tag)
+    if selected in ['Abort', None]:
         sys.exit(0)
-    else:
-        print(f"Selected a tag to bump: {selected_tag}")
-        options = []
-        for bump_type in ['main', 'minor', 'patch']:
-            new_version = bump_version(selected_tag, bump_type)
-            options.append(new_version)
-        options.append('abort')
-        print("Choose a new version to bump to:")
-        selected_tag = select(options)
-        if selected_tag == 'abort':
-            sys.exit(0)
-        print(f"Selected tag: {selected_tag}")
-        final_tag = selected_tag
 
-    if not final_tag:
+    # Ask user to select a tag
+    final_tag = None
+    if selected == "Specify a new tag":
+        final_tag = custom_prompt("Enter the new tag name:", initial_value="")
+    else:
+        final_tag = get_new_tag_version(selected)
+
+    if not final_tag or final_tag == 'abort':
         print("No tag selected or specified. Aborting.")
         sys.exit(1)
     
     # Create a local tag
-    try:
-        os.system(f'git tag -a {final_tag} -m "{final_tag}"')
-        print(f"Tag {final_tag} created successfully.")
-    except Exception as e:
-        print(f"Failed to create tag {final_tag}: {e}")
-        sys.exit(1)
+    create_tag(final_tag)
 
     push_tag = confirm("Do you want to push the tag to the remote repository?")
     if push_tag:
@@ -209,7 +196,7 @@ def release():
             token=configurations.get('token', ''),
         )
         return
-    raise NotImplemented
+    raise NotImplementedError
 
 
 @app.command()
@@ -238,7 +225,7 @@ def ci(hint: str):
         elif choice == "Edit message":
             edited = custom_prompt("Edit the commit message:", initial_value=commit_message)
             os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal
-            commit_message = commit_message if not edited else edited
+            commit_message = edited if edited else commit_message
             print(f"Edited commit message:\n\n{highlight(commit_message)}\n")
             if confirm("Commit with this edited message?"):
                 commit(commit_message)
