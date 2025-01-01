@@ -161,7 +161,7 @@ def tag():
     create_tag(final_tag)
 
     if push_tag := confirm("Do you want to push the tag to the remote repository?"):
-        push_tag_to_origin(push_tag)
+        push_tag_to_origin(final_tag)
     else:
         print("Tag not pushed to remote.")
 
