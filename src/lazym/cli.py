@@ -7,6 +7,7 @@ import typer
 from beaupy import confirm, select
 from prompt_toolkit import PromptSession
 from prompt_toolkit.key_binding import KeyBindings
+from typing_extensions import Annotated
 
 from lazym.configs import configurations
 from lazym.git import (
@@ -119,14 +120,22 @@ def select_base_tag(local_tag, remote_tag):
     return select(options)
 
 
+_INCR_TYPES = ['main', 'minor', 'patch']
+
+
 def get_new_tag_version(base_tag):
-    options = [bump_version(base_tag, btype) for btype in ['main', 'minor', 'patch']]
+    options = [bump_version(base_tag, btype) for btype in _INCR_TYPES]
     options.append('abort')
     return select(options)
 
 
 @app.command()
-def tag():
+def tag(
+    remote: Annotated[Optional[bool], typer.Option('--remote')] = None,
+    local: Annotated[Optional[bool], typer.Option('--local')] = None,
+    incr: Optional[str] = None,
+    push_tag: Annotated[Optional[bool], typer.Option()] = None
+):
     '''
     Automatically generate a new git tag.
     '''
@@ -142,7 +151,13 @@ def tag():
     print("Latest remote tag:", latest_remote_tag if latest_remote_tag else "No remote tags found.")
 
     # Prepare options for selection
-    selected = select_base_tag(latest_local_tag, latest_remote_tag)
+    if remote is True:
+        selected = latest_remote_tag
+    elif local is True:
+        selected = latest_local_tag
+    else:
+        selected = select_base_tag(latest_local_tag, latest_remote_tag)
+
     if selected in ['Abort', None]:
         sys.exit(0)
 
@@ -150,6 +165,8 @@ def tag():
     final_tag = None
     if selected == "Specify a new tag":
         final_tag = custom_prompt("Enter the new tag name:", initial_value="")
+    elif incr in _INCR_TYPES:
+        final_tag = bump_version(selected, incr)
     else:
         final_tag = get_new_tag_version(selected)
 
@@ -160,10 +177,11 @@ def tag():
     # Create a local tag
     create_tag(final_tag)
 
-    if push_tag := confirm("Do you want to push the tag to the remote repository?"):
+    if push_tag is True or (push_tag is None and confirm("Do you want to push the tag to the remote repository?")):
         push_tag_to_origin(final_tag)
     else:
         print("Tag not pushed to remote.")
+
 
 @app.command()
 def release():
