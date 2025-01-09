@@ -23,7 +23,7 @@ def bump_version(current_version: str, incr: str) -> str:
         raise ValueError
 
     major, minor, patch = map(_version_str_to_int, current_version.split('.'))
-    if incr == 'main':
+    if incr == 'major':
         return f'{major + 1}.0.0'
     elif incr == 'minor':
         return f'{major}.{minor + 1}.0'
