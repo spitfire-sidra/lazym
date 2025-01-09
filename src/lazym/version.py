@@ -30,4 +30,4 @@ def bump_version(current_version: str, incr: str) -> str:
         return f'{major}.{minor + 1}.0'
     elif incr == 'patch':
         return f'{major}.{minor}.{patch + 1}'
-    raise ValueError(f"Invalid increment type. Must be one of: major, minor, patch")
+    raise ValueError("Invalid increment type. Must be one of: major, minor, patch")
