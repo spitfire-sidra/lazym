@@ -19,8 +19,9 @@ def _version_str_to_int(s):
 
 
 def bump_version(current_version: str, incr: str) -> str:
+    
     if not _SEM_VER_RE.match(current_version):
-        raise ValueError
+        raise ValueError(f"Invalid version format: {current_version}")
 
     major, minor, patch = map(_version_str_to_int, current_version.split('.'))
     if incr == 'major':
@@ -29,4 +30,4 @@ def bump_version(current_version: str, incr: str) -> str:
         return f'{major}.{minor + 1}.0'
     elif incr == 'patch':
         return f'{major}.{minor}.{patch + 1}'
-    raise ValueError
+    raise ValueError(f"Invalid increment type. Must be one of: major, minor, patch")
