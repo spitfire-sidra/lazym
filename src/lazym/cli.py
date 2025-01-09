@@ -120,7 +120,7 @@ def select_base_tag(local_tag, remote_tag):
     return select(options)
 
 
-_INCR_TYPES = ['main', 'minor', 'patch']
+_INCR_TYPES = ['major', 'minor', 'patch']
 
 
 def get_new_tag_version(base_tag):
