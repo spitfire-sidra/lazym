@@ -40,6 +40,7 @@ setup(
         "pyperclip==1.9.0",
         "halo==0.0.31",
         "typer==0.12.5",
+        "prettytable==3.14.0"
     ],
     entry_points={
         "console_scripts": [

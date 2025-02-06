@@ -5,6 +5,7 @@ from typing import Optional
 
 import typer
 from beaupy import confirm, select
+from prettytable import PrettyTable
 from prompt_toolkit import PromptSession
 from prompt_toolkit.key_binding import KeyBindings
 from typing_extensions import Annotated
@@ -147,8 +148,13 @@ def tag(
     latest_remote_tags = get_latest_tags(repo_owner, repo_name, configurations.get('token', ''))
     latest_remote_tag = latest_remote_tags[0] if latest_remote_tags else None
 
-    print("Latest local tag:", latest_local_tag if latest_local_tag else "No local tags found.")
-    print("Latest remote tag:", latest_remote_tag if latest_remote_tag else "No remote tags found.")
+    print('\nHere are the latest tags from both local and remote repositories:')
+    tb = PrettyTable()
+    tb.field_names = ['', 'Latest Tag']
+    tb.add_row(['Remote', latest_remote_tag if latest_remote_tag else '-'])
+    tb.add_row(['Local', latest_local_tag if latest_local_tag else '-'])
+    print(tb)
+    print()
 
     # Prepare options for selection
     if remote is True:
@@ -156,6 +162,7 @@ def tag(
     elif local is True:
         selected = latest_local_tag
     else:
+        print('Please select a version to bump or specify a new tag:')
         selected = select_base_tag(latest_local_tag, latest_remote_tag)
 
     if selected in ['Abort', None]:
