@@ -182,6 +182,7 @@ def tag(
         sys.exit(1)
     
     # Create a local tag
+    print(f"Tag to be created: {final_tag}")
     create_tag(final_tag)
 
     if push_tag is True or (push_tag is None and confirm("Do you want to push the tag to the remote repository?")):
